@@ -1,0 +1,37 @@
+{
+	"canisters": {
+		"backend": {
+			"main": "src/backend/main.mo",
+			"type": "motoko"
+		},
+		"frontend": {
+			"dependencies": ["backend"],
+			"frontend": {
+				"entrypoint": "build/index.html"
+			},
+			"source": ["build/"],
+			"type": "assets"
+		}
+	},
+	"defaults": {
+		"bitcoin": {
+			"enabled": true,
+			"nodes": [
+			  "127.0.0.1:18444"
+			],
+			"log_level": "info"
+		  },
+		"build": {
+			"args": "",
+			"packtool": ""
+		}
+	},
+  "networks": {
+		"local": {
+			"bind": "localhost:8000",
+			"type": "ephemeral"
+		}
+	},
+  "output_env_file": ".env",
+  "version": 1
+}
