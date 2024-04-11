@@ -4,9 +4,10 @@ import Float "mo:base/Float";
 import Types "Types";
 import Bool "mo:base/Bool"
 
-actor class Product(sellerID:Text, name:Text, price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool=true){
+actor class Product(sellerID:Text, name:Text, category: Text,price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool=true){
     var productSellerID:Text=sellerID;
     var productName:Text=name;
+    var productCategory:Text=category;
     var productPrice:Types.Price=price;
     var productShortDesc:Text=shortDesc;
     var productLongDesc:Text=longDesc;
@@ -19,6 +20,10 @@ actor class Product(sellerID:Text, name:Text, price:Types.Price, shortDesc: Text
 
     public query func getName(): async Text{
         return productName;
+    };
+
+    public query func getCategory(): async Text{
+        return productCategory;
     };
 
     public query func getPrice(): async Types.Price{

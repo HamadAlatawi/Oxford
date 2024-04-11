@@ -90,12 +90,12 @@ actor class User(name:Text, buyersCart:[Product.Product], sellersStock:[Product.
     public func changeWalletInfo(newWallet: [Types.Price]){
         for (i in newWallet.vals()){
             for (j in userWallet.vals()){
-                if (Text.compare(i.currency, j.currency)){
-                    
+                if (Text.equal(i.currency, j.currency)){
+                    j.amount=i.amount;
                 } 
             };
         };
-    }
+    };
 
 
 };
