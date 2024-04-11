@@ -1,5 +1,6 @@
 import Curves "../../motoko-bitcoin/src/ec/Curves";
-
+import Nat "mo:base/Nat";
+import Float "mo:base/Float";
 module Types {
     public type SendRequest = {
         destination_address : Text;
@@ -124,4 +125,48 @@ module Types {
         transaction : [Nat8];
         network : Network;
     };
+
+    public type Currency=
+{
+    #BTC;
+    #ETH;
+    #ICP;
+    #USD;
+    #EUR;
+    #GBP;
+};
+
+public type Price=
+{
+    currency: Currency;
+    amount: Float;
+};
+
+public type Product={
+    sellerID:Text;
+    name:Text;
+    productPrice:Price;
+    productShortDesc:Text;
+    productLongDesc:Text;
+    isSold:Bool;
+    isVisible:Bool;
+};
+
+public type Transaction={
+    id:Nat;
+    productID:Text;
+    buyerID:Text;
+    paidPrice:Types.Price;
+};
+
+public type User{
+    name:Text;
+    buyersCart:[Product.Product];
+    sellersStock:[Product.Product];
+    purchases:[Transaction.Transaction];
+    soldItems:[Transaction.Transaction];
+    wallet:[Types.Price];
+};
+
 }
+
