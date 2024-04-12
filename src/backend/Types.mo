@@ -1,127 +1,79 @@
-import Curves "../../motoko-bitcoin/src/ec/Curves";
-
 module Types {
-    public type SendRequest = {
-        destination_address : Text;
-        amount_in_satoshi : Satoshi;
+
+  public type Timestamp = Nat64;
+  
+  //1. Type that describes the Request arguments for an HTTPS outcall
+    //See: https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-http_request
+    public type HttpRequestArgs = {
+        url : Text;
+        max_response_bytes : ?Nat64;
+        headers : [HttpHeader];
+        body : ?[Nat8];
+        method : HttpMethod;
+        transform : ?TransformRawResponseFunction;
     };
 
-    public type ECDSAPublicKeyReply = {
-        public_key : Blob;
-        chain_code : Blob;
-    };
-
-    public type EcdsaKeyId = {
-        curve : EcdsaCurve;
+    public type HttpHeader = {
         name : Text;
+        value : Text;
     };
 
-    public type EcdsaCurve = {
-        #secp256k1;
+    public type HttpMethod = {
+        #get;
+        #post;
+        #head;
     };
 
-    public type SignWithECDSAReply = {
-        signature : Blob;
+    public type Currency = {
+        BTC : Text;
+        ETH : Text;
+        USD : Text;
+        EUR : Text;
+        GBP : Text
     };
 
-    public type ECDSAPublicKey = {
-        canister_id : ?Principal;
-        derivation_path : [Blob];
-        key_id : EcdsaKeyId;
+    public type HttpResponsePayload = {
+        status : Nat;
+        headers : [HttpHeader];
+        body : [Nat8];
     };
 
-    public type SignWithECDSA = {
-        message_hash : Blob;
-        derivation_path : [Blob];
-        key_id : EcdsaKeyId;
-    };
-
-    public type Satoshi = Nat64;
-    public type MillisatoshiPerVByte = Nat64;
-    public type Cycles = Nat;
-    public type BitcoinAddress = Text;
-    public type BlockHash = [Nat8];
-    public type Page = [Nat8];
-
-    public let CURVE = Curves.secp256k1;
+    //2. HTTPS outcalls have an optional "transform" key. These two types help describe it.
+    //"The transform function may, for example, transform the body in any way, add or remove headers, 
+    //modify headers, etc. "
+    //See: https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-http_request
     
-    /// The type of Bitcoin network the dapp will be interacting with.
-    public type Network = {
-        #mainnet;
-        #testnet;
-        #regtest;
+
+    //2.1 This type describes a function called "TransformRawResponse" used in line 14 above
+    //"If provided, the calling canister itself must export this function." 
+    //In this minimal example for a `GET` request, we declare the type for completeness, but 
+    //we do not use this function. We will pass "null" to the HTTP request.
+    public type TransformRawResponseFunction = {
+        function : shared query TransformArgs -> async HttpResponsePayload;
+        context : Blob;
     };
 
-    /// The type of Bitcoin network as defined by the Bitcoin Motoko library
-    /// (Note the difference in casing compared to `Network`)
-    public type NetworkCamelCase = {
-        #Mainnet;
-        #Testnet;
-        #Regtest;
+    //2.2 These type describes the arguments the transform function needs
+    public type TransformArgs = {
+        response : HttpResponsePayload;
+        context : Blob;
     };
 
-    public func network_to_network_camel_case(network: Network) : NetworkCamelCase {
-        switch (network) {
-            case (#regtest) {
-                #Regtest
-            };
-            case (#testnet) {
-                #Testnet
-            };
-            case (#mainnet) {
-                #Mainnet
-            };
-        }
+    public type CanisterHttpResponsePayload = {
+        status : Nat;
+        headers : [HttpHeader];
+        body : [Nat8];
     };
 
-    /// A reference to a transaction output.
-    public type OutPoint = {
-        txid : Blob;
-        vout : Nat32;
+    public type TransformContext = {
+        function : shared query TransformArgs -> async HttpResponsePayload;
+        context : Blob;
     };
 
-    /// An unspent transaction output.
-    public type Utxo = {
-        outpoint : OutPoint;
-        value : Satoshi;
-        height : Nat32;
+
+    //3. Declaring the IC management canister which we use to make the HTTPS outcall
+    public type IC = actor {
+        http_request : HttpRequestArgs -> async HttpResponsePayload;
     };
 
-    /// A request for getting the balance for a given address.
-    public type GetBalanceRequest = {
-        address : BitcoinAddress;
-        network : Network;
-        min_confirmations : ?Nat32;
-    };
-
-    /// A filter used when requesting UTXOs.
-    public type UtxosFilter = {
-        #MinConfirmations : Nat32;
-        #Page : Page;
-    };
-
-    /// A request for getting the UTXOs for a given address.
-    public type GetUtxosRequest = {
-        address : BitcoinAddress;
-        network : Network;
-        filter : ?UtxosFilter;
-    };
-
-    /// The response returned for a request to get the UTXOs of a given address.
-    public type GetUtxosResponse = {
-        utxos : [Utxo];
-        tip_block_hash : BlockHash;
-        tip_height : Nat32;
-        next_page : ?Page;
-    };
-
-    /// A request for getting the current fee percentiles.
-    public type GetCurrentFeePercentilesRequest = {
-        network : Network;
-    };
-
-    public type SendTransactionRequest = {
-        transaction : [Nat8];
-        network : Network;
-    };
 }
