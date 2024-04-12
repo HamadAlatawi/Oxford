@@ -4,7 +4,7 @@ import Float "mo:base/Float";
 import Types "Types";
 import Bool "mo:base/Bool"
 
-actor class Product(sellerID:Text, name:Text, category: Text,price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool=true){
+actor class Product(sellerID:Text, name:Text, category: Text,price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool){
     var productSellerID:Text=sellerID;
     var productName:Text=name;
     var productCategory:Text=category;

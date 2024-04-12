@@ -20,7 +20,7 @@ actor class User(name:Text, buyersCart:[Product.Product], sellersStock:[Product.
     var soldItemsBuffer = Buffer.fromArray<Transaction.Transaction>(userSoldItems);
     var walletBuffer = Buffer.fromArray<Types.Price>(userWallet);
 
-        public query func getName(): async Text{
+    public query func getName(): async Text{
         return userName;
     };
     public query func getBuyersCart(): async [Product.Product]{
@@ -48,54 +48,54 @@ actor class User(name:Text, buyersCart:[Product.Product], sellersStock:[Product.
     };
 
     public func setBuyersCart(newBuyersCart: [Product.Product]): async(){
-        userBuyersCart=newBuyersCart;
+        userBuyersCart:=newBuyersCart;
     };
 
     public func setSellersStock(newSellersStock: [Product.Product]): async(){
-        userSellersStock=newSellersStock;
+        userSellersStock:=newSellersStock;
     };
 
     public func setPurchases(newPurchases: [Transaction.Transaction]): async(){
-        userPurchases=newPurchases;
+        userPurchases:=newPurchases;
     };
 
     public func setSoldItems(newSoldItems: [Transaction.Transaction]): async(){
-        userSoldItems = newSoldItems;
+        userSoldItems:= newSoldItems;
     };
 
     public func setWallet(newWallet: [Types.Price]): async(){
-        userWallet = newWallet;
+        userWallet:= newWallet;
     };
 
-    public func addToCart (product: Product.Product) async () {
+    public func addToCart (product: Product.Product): async() {
         buyersCartBuffer.add(product);
         await setBuyersCart(Buffer.toArray(buyersCartBuffer));
     };
 
-    public func listItem(product: Product.Product) async () {
+    public func listItem(product: Product.Product): async() {
         sellersStockBuffer.add(product);
         await setSellersStock(Buffer.toArray(sellersStockBuffer));
     };
 
-    public func addToPurchases (transaction: Transaction.Transaction) async () {
+    public func addToPurchases (transaction: Transaction.Transaction): async() {
         purchasesBuffer.add(transaction);
         await setPurchases(Buffer.toArray(purchasesBuffer));
     };
 
-    public func addToSoldItems (transaction: Transaction.Transaction) async () {
+    public func addToSoldItems (transaction: Transaction.Transaction): async() {
         soldItemsBuffer.add(transaction);
         await setSoldItems(Buffer.toArray(soldItemsBuffer));
     };
 
-    public func changeWalletInfo(newWallet: [Types.Price]){
-        for (i in newWallet.vals()){
-            for (j in userWallet.vals()){
-                if (Text.equal(i.currency, j.currency)){
-                    j.amount=i.amount;
-                } 
-            };
-        };
-    };
+    // public func changeWalletInfo(newWallet: [Types.Price]): async(){
+    //     for (i in newWallet.vals()){
+    //         for (j in userWallet.vals()){
+    //             if (Text.equal(i.currency, j.currency)){
+    //                 j.amount:=i.amount;
+    //             } 
+    //         };
+    //     };
+    // };
 
 
 };

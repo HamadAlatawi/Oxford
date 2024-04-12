@@ -12,32 +12,37 @@ import Iter "mo:base/Iter";
 import Cycles "mo:base/ExperimentalCycles";
 
 
-actor class Main(){
+actor class Main(name:Text){
     stable var usersArray: [User.User]=[];
     stable var productsArray: [Product.Product]=[];
    
     var userBuffer=Buffer.fromArray<User.User>(usersArray);
     var productBuffer = Buffer.fromArray<Product.Product>(productsArray);
+    
+    var user= await createUser(name);
 
-    public func getAllUserNames(): async [Text] {
-        let namebuffer= Buffer.Buffer<Text>(0);
-        for (index in usersArray.vals()){
-            let name=await index.getName();
-            namebuffer.add(name);
-        };
-        return Buffer.toArray(namebuffer);
-    };
-     private func numberOfSplits(str: Text, delimiter: Text):async Nat {
+    public func numberOfSplits(str: Text, delimiter: Text): async Nat {
         var count:Nat=0;
             for (c in str.chars()) {
                 if (Text.equal(Text.fromChar(c), delimiter)) {
+                    
                 count +=1;
                 } 
             };
         return count;
     };
 
-    public func createUser(name:Text): async User.User {
+
+    public query func getAllUserNames(): async [Text] {
+        let namebuffer= Buffer.Buffer<Text>(0);
+        for (index in usersArray.vals()){
+            // let name=await index.getName();
+            // namebuffer.add(name);
+        };
+        return Buffer.toArray(namebuffer);
+    };
+
+    public query func createUser(name:Text): async ?User.User {
        let fullNameSplits= await numberOfSplits(name," ");
        if (fullNameSplits != 1){
         var flag:Bool=false;
@@ -45,66 +50,47 @@ actor class Main(){
          for (username in usernames.vals()){
             if (Text.equal(name,username)){
                 flag:=true;
+                //break;
             };
-         }; 
-        };
-        let cycles = Cycles.add(14692307692);
-        let user=await User.User(name, [],[],[],[],[{currency=#eth;amount=0},{currency=#btc;amount=0},{currency=#icp;amount=0},{currency=#usd;amount=0},{currency=#gbp;amount=0},{currency=#eur;amount=0}]);
-        let temp=updateUserArray(user);
-        return user;
+         };
+        if(flag==false){
+            let cycles = Cycles.add(14692307692);
+            return await User.User(name, [],[],[],[],[]);
+        }; 
        };
-    private func updateUserArray(user: User.User): async() {
-    userBuffer.add(user);
-    usersArray:=Buffer.toArray<User.User>(userBuffer);
+       return null;
     };
+    //{0.0,#btc},{#eth,0.0},{#icp,0.0},{#usd,0.0},{#eur,0.0},{#gbp,0.0}
 
-    public func loginUser (name:Text): async User.User {
+    public query func loginUser (name:Text): async ?User.User {
+       let flag:Bool=false;
          for (index in usersArray.vals()){
             if (Text.equal(name, await index.getName())){
                 return index;
-            }
-        };
-        return await createUser(name); 
-    };
-
-    public query func getAllUsers ():async [User.User]{
-        return usersArray; 
-    };
-
-    public func getAllUsersTypesFromObjectArray (userObjList:[User.User]): async [ObjectTypes.User] {
-        let typeBuffer= Buffer.Buffer<ObjectTypes.User>(0);
-        for (user in userObjList.vals()){
-            typeBuffer.add(await (convertUserToType(user)));
             };
-        return Buffer.toArray(typeBuffer);
+        };
+        return null;
     };
 
-    public func getAllUserTypes(): async [ObjectTypes.User] {
-        return await (getAllUsersTypesFromObjectArray(await getAllUsers())); 
-    };
-
-
-
-   
-
-    public func createProduct(user:Text ,name:Text, category:Text ,price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool): async Product.Product{
+    public func createProduct(name:Text, category:Text ,price:Types.Price, shortDesc: Text, longDesc:Text, isVisible:Bool): async(){
+        if (user!=null){
         let cycles = Cycles.add(14692307692);
-        var product = await Product.Product(user, name, category ,price, shortDesc, longDesc, isVisible);
-        let temp=updateProductArray(product);
-        return product
+        let product = Product.Product(await user.getName(), name, category ,price, shortDesc, longDesc, isVisible);
+        updateProductArray(product);
+        };
     };
 
-    private func updateProductArray(product: Product.Product): async() {
+    public func updateProductArray(product: Product.Product): async() {
         productBuffer.add(product);
         productsArray:=Buffer.toArray<Product.Product>(productBuffer);
     };
 
-     public query func getAllProducts ():async [Product.Product]{
+    public query func getAllProducts ():async [Product.Product]{
         return productsArray; 
     };
 
 
-    public func getAllProductTypesFromObjectArray (productObjList:[Product.Product]): async [ObjectTypes.Product] {
+    public query func getAllProductTypesFromObjectArray (productObjList:[Product.Product]): async [ObjectTypes.Product] {
         let typeBuffer= Buffer.Buffer<ObjectTypes.Product>(0);
         for (product in productObjList.vals()){
             typeBuffer.add(await (convertProductToType(product)));
@@ -112,23 +98,25 @@ actor class Main(){
         return Buffer.toArray(typeBuffer);
     };
     
-    public func getAllProductTypes(): async [ObjectTypes.Product] {
+    public query func getAllProductTypes(): async [ObjectTypes.Product] {
         return await (getAllProductTypesFromObjectArray(await getAllProducts())); 
     };
 
-    private func convertProductToType(product:Product.Product): async ObjectTypes.Product {
+
+
+    public query func convertProductToType(product:Product.Product): async ObjectTypes.Product {
         return{
                 sellerID= await product.getSellerID();
                 name=await product.getName();
                 productPrice=await product.getPrice();
                 productShortDesc=await product.getShortDesc();
                 productLongDesc=await product.getLongDesc();
-                isSold=await product.getIsSold();
+                isSold=await product.getStatus();
                 isVisible=await product.getIsVisible();
         }
     };
 
-    private func convertTransactionToType(transaction:Transaction.Transaction): async ObjectTypes.Transaction {
+    public func convertTransactionToType(transaction:Transaction.Transaction): async ObjectTypes.Transaction {
     return{
         id= await transaction.getID();
         productID=await transaction.getProductID();
@@ -137,7 +125,7 @@ actor class Main(){
     };
     };
 
-    private func convertUserToType(user:User.User): async ObjectTypes.User {
+    public func convertUserToType(user:User.User): async ObjectTypes.User {
     return{
         name= await user.getName();
         buyersCart=await user.getBuyersCart();
