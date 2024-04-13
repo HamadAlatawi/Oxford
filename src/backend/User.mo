@@ -87,7 +87,39 @@ actor class User(name:Text, buyersCart:[Product.Product], sellersStock:[Product.
         await setSoldItems(Buffer.toArray(soldItemsBuffer));
     };
 
-    // public func changeWalletInfo(newWallet: [Types.Price]): async(){
+    public func addToWallet(price:Types.Price): async(){
+            var newWallet=Buffer.Buffer<Types.Price>(0);
+            for (j in userWallet.vals()){
+                if (price.currency== j.currency){
+                    var amount=j.amount+price.amount;
+                    let p:Types.Price={currency=price.currency;amount=amount};
+                    newWallet.add(p);
+                }
+                else{
+                    newWallet.add(j)
+                }; 
+            };
+            let temp= await setWallet(Buffer.toArray(newWallet));
+    };
+
+    public func takeFromWallet(price:Types.Price): async(){
+            var newWallet=Buffer.Buffer<Types.Price>(0);
+            for (j in userWallet.vals()){
+                if (price.currency== j.currency){
+                    var amount=j.amount-price.amount;
+                    let p:Types.Price={currency=price.currency;amount=amount};
+                    newWallet.add(p);
+                }
+                else{
+                    newWallet.add(j)
+                }; 
+            };
+            let temp= await setWallet(Buffer.toArray(newWallet));
+    };
+
+    
+    //  public func changeWalletInfo(newWallet: [Types.Price]): async(){
+        
     //     for (i in newWallet.vals()){
     //         for (j in userWallet.vals()){
     //             if (Text.equal(i.currency, j.currency)){

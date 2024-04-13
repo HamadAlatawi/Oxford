@@ -116,6 +116,16 @@ actor class Main(){
         return await (getAllProductTypesFromObjectArray(await getAllProducts())); 
     };
 
+    public func purchase(user: User.User,price: Types.Price ,product:Product.Product): async(){
+        let sellerName=await product.getSellerID();
+        for(index in usersArray.vals()){
+            let target= await user.getName();
+            if (Text.equal(target,sellerName)){
+                let x=index.addToWallet(price);
+            };
+        };
+    };
+
     private func convertProductToType(product:Product.Product): async ObjectTypes.Product {
         return{
                 sellerID= await product.getSellerID();
@@ -146,6 +156,6 @@ actor class Main(){
         soldItems=await user.getSoldItems();
         wallet=await user.getWallet();
     }
-    };
+    };   
 
 }
