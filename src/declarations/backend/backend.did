@@ -1,0 +1,138 @@
+type User__1 = 
+ record {
+   buyersCart: vec Product;
+   name: text;
+   purchases: vec Transaction;
+   sellersStock: vec Product;
+   soldItems: vec Transaction;
+   wallet: vec Price;
+ };
+type User = 
+ service {
+   addToCart: (Product) -> ();
+   addToPurchases: (Transaction) -> ();
+   addToSoldItems: (Transaction) -> ();
+   addToWallet: (Price) -> ();
+   getBuyersCart: () -> (vec Product) query;
+   getName: () -> (text) query;
+   getPurchases: () -> (vec Transaction) query;
+   getSellersStock: () -> (vec Product) query;
+   getSoldItems: () -> (vec Transaction) query;
+   getWallet: () -> (vec Price) query;
+   listItem: (Product) -> ();
+   setBuyersCart: (vec Product) -> ();
+   setName: (text) -> ();
+   setPurchases: (vec Transaction) -> ();
+   setSellersStock: (vec Product) -> ();
+   setSoldItems: (vec Transaction) -> ();
+   setWallet: (vec Price) -> ();
+   takeFromWallet: (Price) -> ();
+ };
+type TransformArgs = 
+ record {
+   context: blob;
+   response: HttpResponsePayload;
+ };
+type Transaction = 
+ service {
+   getBuyerID: () -> (text) query;
+   getID: () -> (nat) query;
+   getPaidPrice: () -> (Price) query;
+   getProductID: () -> (text) query;
+   setBuyerID: (text) -> ();
+   setPaidPrice: (Price) -> ();
+   setProductID: (text) -> ();
+ };
+type Rate = 
+ record {
+   currency: text;
+   rate: text;
+ };
+type Product__1 = 
+ record {
+   isSold: bool;
+   isVisible: bool;
+   name: text;
+   productCategory: text;
+   productID: nat;
+   productLongDesc: text;
+   productPicture: text;
+   productPrice: Price;
+   productShortDesc: text;
+   sellerID: text;
+ };
+type Product = 
+ service {
+   getCategory: () -> (text) query;
+   getIsSold: () -> (bool) query;
+   getIsVisible: () -> (bool) query;
+   getLongDesc: () -> (text) query;
+   getName: () -> (text) query;
+   getPicture: () -> (text) query;
+   getPrice: () -> (Price) query;
+   getProductID: () -> (nat) query;
+   getSellerID: () -> (text) query;
+   getShortDesc: () -> (text) query;
+   setIsVisible: (bool) -> ();
+   setLongDesc: (text) -> ();
+   setName: (text) -> ();
+   setPicture: (text) -> ();
+   setPrice: (Price) -> ();
+   setProductID: (nat) -> () query;
+   setShortDesc: (text) -> ();
+   updateStatus: () -> ();
+ };
+type Price = 
+ record {
+   amount: nat;
+   currency: Currency;
+ };
+type Main = 
+ service {
+   createProduct: (text, text, text, Price, text, text, bool, text) ->
+    (Product);
+   createUser: (text) -> (User);
+   getAllProductTypes: () -> (vec Product__1);
+   getAllProductTypesFromObjectArray: (vec Product) -> (vec Product__1);
+   getAllProducts: () -> (vec Product) query;
+   getAllUserNames: () -> (vec text);
+   getAllUserTypes: () -> (vec User__1);
+   getAllUsers: () -> (vec User) query;
+   getAllUsersTypesFromObjectArray: (vec User) -> (vec User__1);
+   getConfirmationDetails: (text) -> (vec Rate);
+   loginUser: (text) -> (User);
+   purchase: (User, Price, Product) -> ();
+   transform: (TransformArgs) -> (CanisterHttpResponsePayload) query;
+ };
+type HttpResponsePayload = 
+ record {
+   body: vec nat8;
+   headers: vec HttpHeader;
+   status: nat;
+ };
+type HttpHeader__1 = 
+ record {
+   name: text;
+   value: text;
+ };
+type HttpHeader = 
+ record {
+   name: text;
+   value: text;
+ };
+type Currency = 
+ variant {
+   btc;
+   eth;
+   eur;
+   gbp;
+   icp;
+   usd;
+ };
+type CanisterHttpResponsePayload = 
+ record {
+   body: vec nat8;
+   headers: vec HttpHeader__1;
+   status: nat;
+ };
+service : () -> Main

@@ -1,15 +1,44 @@
 import FlexSearch from 'flexsearch'
 
+const Currency : any ={
+	btc : {"btc": null},
+	eth : {"eth": null},
+	icp : {"icp": null},
+	usd : {"usd": null},
+	eur : {"eur": null},
+	gbp : {"gbp": null},
+  }
+
 export type Post = {
-	content: string
-	slug: string
-	title: string
+	productLongDesc : string
+	productCategory : string
+	name : string
+	productShortDesc: string
+	productID: number
+	isSold: boolean
+	isVisible: boolean
+	sellerID : string
+	productPrice : productPrice
+	productPicture : string
 }
 
 export type Result = {
-	content: string[]
-	slug: string
-	title: string
+	productLongDesc : string[]
+	productCategory : string
+	name : string
+	productShortDesc: string
+	productID: number
+	isSold: boolean
+	isVisible: boolean
+	sellerID : string
+	productPrice : productPrice
+	productPicture : string
+}
+
+
+export type productPrice = {
+	currency : typeof Currency;
+	amount: number;
 }
 
 let postsIndex: FlexSearch.Index
@@ -19,7 +48,7 @@ export function createPostsIndex(data: Post[]) {
 	postsIndex = new FlexSearch.Index({ tokenize: 'forward' })
 
 	data.forEach((post, i) => {
-		const item = `${post.title} ${post.content}`
+		const item = `${post.name} ${post.productLongDesc}`
 		postsIndex.add(i, item)
 	})
 
@@ -32,11 +61,29 @@ export function searchPostsIndex(searchTerm: string) {
 
 	return results
 		.map((index) => posts[index as number])
-		.map(({ slug, title, content }) => {
+		.map(({ 
+			productLongDesc,
+			productCategory,
+			name,
+			productShortDesc,
+			productID,
+			isSold,
+			isVisible,
+			sellerID,
+			productPrice,
+			productPicture,
+		 }) => {
 			return {
-				slug,
-				title: replaceTextWithMarker(title, match),
-				content: getMatches(content, match),
+				productLongDesc: getMatches(productLongDesc, match),
+				productCategory,
+				name: replaceTextWithMarker(name, match),
+				productShortDesc,
+				productID,
+				isSold,
+				isVisible,
+				sellerID,
+				productPrice,
+				productPicture,
 			}
 		})
 }

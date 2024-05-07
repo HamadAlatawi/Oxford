@@ -23,7 +23,16 @@
     "deploy:ic": "dfx deploy --network=ic",
     "generate": "dfx generate && node ./update.types.mjs",
     "startdfx": "dfx start --clean --background",
-    "deploy": "dfx deploy backend --argument '(variant { regtest })' && dfx deploy frontend"
+    "deploy": "dfx deploy backend && dfx deploy frontend",
+    "deployBackend": "dfx deploy backend",
+    "deployIC" : "dfx deploy --network ic backend && dfx deploy --network ic frontend",
+    "addCycles" : "dfx canister deposit-cycles $AMOUNT $CANISTERID",
+    "addCyclesIC" : "dfx canister --network ic deposit-cycles $AMOUNT $CANISTERID",
+    "rebuildCanister" : "dfx canister --network ic install $CANISTERID --mode reinstall",
+    "canisterStatus" : "dfx canister status --network ic --all",
+    "canisterID" : "dfx canister id $CANISTERNAME",
+    "canisterIDIC" : "dfx canister id $CANISTERNAME --network ic",
+    "canisterBitcoinRebuild" : "dfx canister install backend --mode reinstall --network ic"
   },
   "dependencies": {
     "@dfinity/agent": "^0.19.3",
@@ -36,6 +45,8 @@
     "flexsearch": "^0.7.43",
     "mode-watcher": "^0.1.2",
     "radix-icons-svelte": "^1.2.1",
+    "svelte-file-dropzone": "^2.0.7",
+    "svelte-persisted-store": "^0.9.1",
     "svelte-radix": "^1.1.0",
     "svelte-sonner": "^0.3.22",
     "tailwind-merge": "^2.2.1",
@@ -59,15 +70,17 @@
     "stream-browserify": "3.0.0",
     "svelte": "^4.2.7",
     "svelte-check": "^3.6.0",
+    "sveltekit-superforms": "^2.13.0",
     "tailwindcss": "^3.3.5",
     "terser-webpack-plugin": "^5.3.3",
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
     "util": "0.12.4",
-    "vite": "^4.4.2",
+    "vite": "^4.5.3",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.8.1"
+    "webpack-dev-server": "^4.8.1",
+    "zod": "^3.23.6"
   },
   "engines": {
     "node": "^12 || ^14 || ^16 || >=17",

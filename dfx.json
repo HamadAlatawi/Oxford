@@ -2,7 +2,12 @@
 	"canisters": {
 		"backend": {
 			"main": "src/backend/main.mo",
-			"type": "motoko"
+			"type": "motoko",
+			"dependencies": ["fileUpload"]
+		},
+		"fileUpload" :{
+			"main" : "src/uploadFile/Assets.mo",
+			"type" : "motoko"
 		},
 		"frontend": {
 			"dependencies": ["backend"],
@@ -14,13 +19,6 @@
 		}
 	},
 	"defaults": {
-		"bitcoin": {
-			"enabled": true,
-			"nodes": [
-			  "127.0.0.1:18444"
-			],
-			"log_level": "info"
-		  },
 		"build": {
 			"args": "",
 			"packtool": ""

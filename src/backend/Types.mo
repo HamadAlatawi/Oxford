@@ -1,8 +1,9 @@
+import Nat "mo:base/Nat";
 module Types {
 
-  public type Timestamp = Nat64;
-  
-  //1. Type that describes the Request arguments for an HTTPS outcall
+    public type Timestamp = Nat64;
+
+    //1. Type that describes the Request arguments for an HTTPS outcall
     //See: https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-http_request
     public type HttpRequestArgs = {
         url : Text;
@@ -25,11 +26,17 @@ module Types {
     };
 
     public type Currency = {
-        BTC : Text;
-        ETH : Text;
-        USD : Text;
-        EUR : Text;
-        GBP : Text
+        #btc;
+        #eth;
+        #icp;
+        #usd;
+        #eur;
+        #gbp;
+    };
+
+    public type Price = {
+        currency : Currency;
+        amount : Nat;
     };
 
     public type HttpResponsePayload = {
@@ -39,14 +46,13 @@ module Types {
     };
 
     //2. HTTPS outcalls have an optional "transform" key. These two types help describe it.
-    //"The transform function may, for example, transform the body in any way, add or remove headers, 
+    //"The transform function may, for example, transform the body in any way, add or remove headers,
     //modify headers, etc. "
     //See: https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-http_request
-    
 
     //2.1 This type describes a function called "TransformRawResponse" used in line 14 above
-    //"If provided, the calling canister itself must export this function." 
-    //In this minimal example for a `GET` request, we declare the type for completeness, but 
+    //"If provided, the calling canister itself must export this function."
+    //In this minimal example for a `GET` request, we declare the type for completeness, but
     //we do not use this function. We will pass "null" to the HTTP request.
     public type TransformRawResponseFunction = {
         function : shared query TransformArgs -> async HttpResponsePayload;
@@ -70,10 +76,60 @@ module Types {
         context : Blob;
     };
 
-
     //3. Declaring the IC management canister which we use to make the HTTPS outcall
     public type IC = actor {
         http_request : HttpRequestArgs -> async HttpResponsePayload;
     };
 
-}
+
+    public type HeaderField = (Text, Text);
+
+    public type Chunk = {
+        batch_name : Text;
+        content : [Nat8];
+    };
+
+    public type Asset = {
+        encoding : AssetEncoding;
+        content_type : Text;
+    };
+
+    public type AssetEncoding = {
+        modified : Int;
+        content_chunks : [[Nat8]];
+        total_length : Nat;
+        certified : Bool;
+    };
+
+    public type HttpRequest = {
+        url : Text;
+        method : Text;
+        body : [Nat8];
+        headers : [HeaderField];
+    };
+
+    public type HttpResponse = {
+        body : [Nat8];
+        headers : [HeaderField];
+        status_code : Nat16;
+        streaming_strategy : ?StreamingStrategy;
+    };
+
+    public type StreamingStrategy = {
+        #Callback : {
+            token : StreamingCallbackToken;
+            callback : shared () -> async ();
+        };
+    };
+
+    public type StreamingCallbackToken = {
+        key : Text;
+        index : Nat;
+        content_encoding : Text;
+    };
+
+    public type StreamingCallbackHttpResponse = {
+        body : [Nat8];
+        token : ?StreamingCallbackToken;
+    };
+};
