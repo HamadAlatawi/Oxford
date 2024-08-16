@@ -60,7 +60,8 @@ Open two separate terminals and in each terminal run:
 
 ```bash
 # Terminal 1
-cd ..
+cd /Oxford
+npm install
 npm run generate
 npm run startdfx
 ```
@@ -78,7 +79,8 @@ If you want to test your project locally with Hot Module Replacement (HMR), you 
 
 ```bash
 # Terminal 1
-cd ..
+cd /Oxford
+npm install
 npm run generate
 npm run startdfx
 ```
