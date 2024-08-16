@@ -13,6 +13,9 @@
 # generated files
 src/declarations/
 
+#canister_IDS
+canister_ids.json
+
 # rust
 target/
 
@@ -33,6 +36,3 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
-#bitcoin
-bitcoin-25.0
