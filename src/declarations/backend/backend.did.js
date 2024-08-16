@@ -8,7 +8,7 @@ export const idlFactory = ({ IDL }) => {
     'usd' : IDL.Null,
   });
   const Price = IDL.Record({ 'currency' : Currency, 'amount' : IDL.Nat });
-  const Product = IDL.Service({
+  const Product__1 = IDL.Service({
     'getCategory' : IDL.Func([], [IDL.Text], ['query']),
     'getIsSold' : IDL.Func([], [IDL.Bool], ['query']),
     'getIsVisible' : IDL.Func([], [IDL.Bool], ['query']),
@@ -28,14 +28,23 @@ export const idlFactory = ({ IDL }) => {
     'setShortDesc' : IDL.Func([IDL.Text], [], []),
     'updateStatus' : IDL.Func([], [], []),
   });
-  const Transaction = IDL.Service({
-    'getBuyerID' : IDL.Func([], [IDL.Text], ['query']),
-    'getID' : IDL.Func([], [IDL.Nat], ['query']),
-    'getPaidPrice' : IDL.Func([], [Price], ['query']),
-    'getProductID' : IDL.Func([], [IDL.Text], ['query']),
-    'setBuyerID' : IDL.Func([IDL.Text], [], []),
-    'setPaidPrice' : IDL.Func([Price], [], []),
-    'setProductID' : IDL.Func([IDL.Text], [], []),
+  const Product = IDL.Record({
+    'productLongDesc' : IDL.Text,
+    'productCategory' : IDL.Text,
+    'name' : IDL.Text,
+    'productShortDesc' : IDL.Text,
+    'productID' : IDL.Nat,
+    'isSold' : IDL.Bool,
+    'isVisible' : IDL.Bool,
+    'sellerID' : IDL.Text,
+    'productPicture' : IDL.Text,
+    'productPrice' : Price,
+  });
+  const Transaction = IDL.Record({
+    'id' : IDL.Nat,
+    'paidPrice' : Price,
+    'productID' : IDL.Text,
+    'buyerID' : IDL.Text,
   });
   const User = IDL.Service({
     'addToCart' : IDL.Func([Product], [], []),
@@ -57,18 +66,6 @@ export const idlFactory = ({ IDL }) => {
     'setWallet' : IDL.Func([IDL.Vec(Price)], [], []),
     'takeFromWallet' : IDL.Func([Price], [], []),
   });
-  const Product__1 = IDL.Record({
-    'productLongDesc' : IDL.Text,
-    'productCategory' : IDL.Text,
-    'name' : IDL.Text,
-    'productShortDesc' : IDL.Text,
-    'productID' : IDL.Nat,
-    'isSold' : IDL.Bool,
-    'isVisible' : IDL.Bool,
-    'sellerID' : IDL.Text,
-    'productPicture' : IDL.Text,
-    'productPrice' : Price,
-  });
   const User__1 = IDL.Record({
     'name' : IDL.Text,
     'soldItems' : IDL.Vec(Transaction),
@@ -76,23 +73,6 @@ export const idlFactory = ({ IDL }) => {
     'sellersStock' : IDL.Vec(Product),
     'purchases' : IDL.Vec(Transaction),
     'wallet' : IDL.Vec(Price),
-  });
-  const Rate = IDL.Record({ 'rate' : IDL.Text, 'currency' : IDL.Text });
-  const HttpHeader = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
-  const HttpResponsePayload = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(HttpHeader),
-  });
-  const TransformArgs = IDL.Record({
-    'context' : IDL.Vec(IDL.Nat8),
-    'response' : HttpResponsePayload,
-  });
-  const HttpHeader__1 = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
-  const CanisterHttpResponsePayload = IDL.Record({
-    'status' : IDL.Nat,
-    'body' : IDL.Vec(IDL.Nat8),
-    'headers' : IDL.Vec(HttpHeader__1),
   });
   const Main = IDL.Service({
     'createProduct' : IDL.Func(
@@ -106,17 +86,17 @@ export const idlFactory = ({ IDL }) => {
           IDL.Bool,
           IDL.Text,
         ],
-        [Product],
+        [Product__1],
         [],
       ),
     'createUser' : IDL.Func([IDL.Text], [User], []),
-    'getAllProductTypes' : IDL.Func([], [IDL.Vec(Product__1)], []),
+    'getAllProductTypes' : IDL.Func([], [IDL.Vec(Product)], []),
     'getAllProductTypesFromObjectArray' : IDL.Func(
-        [IDL.Vec(Product)],
         [IDL.Vec(Product__1)],
+        [IDL.Vec(Product)],
         [],
       ),
-    'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
+    'getAllProducts' : IDL.Func([], [IDL.Vec(Product__1)], ['query']),
     'getAllUserNames' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
     'getAllUserTypes' : IDL.Func([], [IDL.Vec(User__1)], []),
     'getAllUsers' : IDL.Func([], [IDL.Vec(User)], ['query']),
@@ -125,14 +105,8 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(User__1)],
         [],
       ),
-    'getConfirmationDetails' : IDL.Func([IDL.Text], [IDL.Vec(Rate)], []),
     'loginUser' : IDL.Func([IDL.Text], [User], []),
-    'purchase' : IDL.Func([User, Price, Product], [], []),
-    'transform' : IDL.Func(
-        [TransformArgs],
-        [CanisterHttpResponsePayload],
-        ['query'],
-      ),
+    'purchase' : IDL.Func([User, Price, Product__1], [], []),
   });
   return Main;
 };

@@ -4,7 +4,7 @@
     import { toast } from "svelte-sonner";
     import { Label } from "$lib/components/ui/label/";
     import * as Select from "$lib/components/ui/select";
-    import { actorBackend } from "$lib/motokoImports/backend"
+    import { httpOutcalls } from "$lib/motokoImports/backend"
     import { onDestroy } from 'svelte';
     import { writable } from 'svelte/store';
     import Reload from "svelte-radix/Reload.svelte";
@@ -64,7 +64,7 @@
 
     async function getRates(desiredCurrency) {
         try {
-            const res = await actorBackend.getConfirmationDetails(desiredCurrency);
+            const res = await httpOutcalls.getConfirmationDetails(desiredCurrency);
             const filteredRates = res.filter(
                 (item) =>
                 item.currency === "USD" ||

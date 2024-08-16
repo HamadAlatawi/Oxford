@@ -28,40 +28,14 @@ type User =
    setWallet: (vec Price) -> ();
    takeFromWallet: (Price) -> ();
  };
-type TransformArgs = 
- record {
-   context: blob;
-   response: HttpResponsePayload;
- };
 type Transaction = 
- service {
-   getBuyerID: () -> (text) query;
-   getID: () -> (nat) query;
-   getPaidPrice: () -> (Price) query;
-   getProductID: () -> (text) query;
-   setBuyerID: (text) -> ();
-   setPaidPrice: (Price) -> ();
-   setProductID: (text) -> ();
- };
-type Rate = 
  record {
-   currency: text;
-   rate: text;
+   buyerID: text;
+   id: nat;
+   paidPrice: Price;
+   productID: text;
  };
 type Product__1 = 
- record {
-   isSold: bool;
-   isVisible: bool;
-   name: text;
-   productCategory: text;
-   productID: nat;
-   productLongDesc: text;
-   productPicture: text;
-   productPrice: Price;
-   productShortDesc: text;
-   sellerID: text;
- };
-type Product = 
  service {
    getCategory: () -> (text) query;
    getIsSold: () -> (bool) query;
@@ -82,6 +56,19 @@ type Product =
    setShortDesc: (text) -> ();
    updateStatus: () -> ();
  };
+type Product = 
+ record {
+   isSold: bool;
+   isVisible: bool;
+   name: text;
+   productCategory: text;
+   productID: nat;
+   productLongDesc: text;
+   productPicture: text;
+   productPrice: Price;
+   productShortDesc: text;
+   sellerID: text;
+ };
 type Price = 
  record {
    amount: nat;
@@ -90,35 +77,17 @@ type Price =
 type Main = 
  service {
    createProduct: (text, text, text, Price, text, text, bool, text) ->
-    (Product);
+    (Product__1);
    createUser: (text) -> (User);
-   getAllProductTypes: () -> (vec Product__1);
-   getAllProductTypesFromObjectArray: (vec Product) -> (vec Product__1);
-   getAllProducts: () -> (vec Product) query;
+   getAllProductTypes: () -> (vec Product);
+   getAllProductTypesFromObjectArray: (vec Product__1) -> (vec Product);
+   getAllProducts: () -> (vec Product__1) query;
    getAllUserNames: () -> (vec text);
    getAllUserTypes: () -> (vec User__1);
    getAllUsers: () -> (vec User) query;
    getAllUsersTypesFromObjectArray: (vec User) -> (vec User__1);
-   getConfirmationDetails: (text) -> (vec Rate);
    loginUser: (text) -> (User);
-   purchase: (User, Price, Product) -> ();
-   transform: (TransformArgs) -> (CanisterHttpResponsePayload) query;
- };
-type HttpResponsePayload = 
- record {
-   body: vec nat8;
-   headers: vec HttpHeader;
-   status: nat;
- };
-type HttpHeader__1 = 
- record {
-   name: text;
-   value: text;
- };
-type HttpHeader = 
- record {
-   name: text;
-   value: text;
+   purchase: (User, Price, Product__1) -> ();
  };
 type Currency = 
  variant {
@@ -128,11 +97,5 @@ type Currency =
    gbp;
    icp;
    usd;
- };
-type CanisterHttpResponsePayload = 
- record {
-   body: vec nat8;
-   headers: vec HttpHeader__1;
-   status: nat;
  };
 service : () -> Main

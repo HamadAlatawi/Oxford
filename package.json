@@ -23,7 +23,7 @@
     "deploy:ic": "dfx deploy --network=ic",
     "generate": "dfx generate && node ./update.types.mjs",
     "startdfx": "dfx start --clean --background",
-    "deploy": "dfx deploy backend && dfx deploy frontend",
+    "deploy": "dfx deploy backend && dfx deploy fileUpload && dfx deploy httpOutcalls && dfx deploy frontend",
     "deployBackend": "dfx deploy backend",
     "deployIC" : "dfx deploy --network ic backend && dfx deploy --network ic frontend",
     "addCycles" : "dfx canister deposit-cycles $AMOUNT $CANISTERID",

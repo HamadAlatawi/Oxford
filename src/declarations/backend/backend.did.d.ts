@@ -2,34 +2,22 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
-export interface CanisterHttpResponsePayload {
-  'status' : bigint,
-  'body' : Uint8Array | number[],
-  'headers' : Array<HttpHeader__1>,
-}
 export type Currency = { 'btc' : null } |
   { 'eth' : null } |
   { 'eur' : null } |
   { 'gbp' : null } |
   { 'icp' : null } |
   { 'usd' : null };
-export interface HttpHeader { 'value' : string, 'name' : string }
-export interface HttpHeader__1 { 'value' : string, 'name' : string }
-export interface HttpResponsePayload {
-  'status' : bigint,
-  'body' : Uint8Array | number[],
-  'headers' : Array<HttpHeader>,
-}
 export interface Main {
   'createProduct' : ActorMethod<
     [string, string, string, Price, string, string, boolean, string],
     Principal
   >,
   'createUser' : ActorMethod<[string], Principal>,
-  'getAllProductTypes' : ActorMethod<[], Array<Product__1>>,
+  'getAllProductTypes' : ActorMethod<[], Array<Product>>,
   'getAllProductTypesFromObjectArray' : ActorMethod<
     [Array<Principal>],
-    Array<Product__1>
+    Array<Product>
   >,
   'getAllProducts' : ActorMethod<[], Array<Principal>>,
   'getAllUserNames' : ActorMethod<[], Array<string>>,
@@ -39,13 +27,23 @@ export interface Main {
     [Array<Principal>],
     Array<User__1>
   >,
-  'getConfirmationDetails' : ActorMethod<[string], Array<Rate>>,
   'loginUser' : ActorMethod<[string], Principal>,
   'purchase' : ActorMethod<[Principal, Price, Principal], undefined>,
-  'transform' : ActorMethod<[TransformArgs], CanisterHttpResponsePayload>,
 }
 export interface Price { 'currency' : Currency, 'amount' : bigint }
 export interface Product {
+  'productLongDesc' : string,
+  'productCategory' : string,
+  'name' : string,
+  'productShortDesc' : string,
+  'productID' : bigint,
+  'isSold' : boolean,
+  'isVisible' : boolean,
+  'sellerID' : string,
+  'productPicture' : string,
+  'productPrice' : Price,
+}
+export interface Product__1 {
   'getCategory' : ActorMethod<[], string>,
   'getIsSold' : ActorMethod<[], boolean>,
   'getIsVisible' : ActorMethod<[], boolean>,
@@ -65,49 +63,29 @@ export interface Product {
   'setShortDesc' : ActorMethod<[string], undefined>,
   'updateStatus' : ActorMethod<[], undefined>,
 }
-export interface Product__1 {
-  'productLongDesc' : string,
-  'productCategory' : string,
-  'name' : string,
-  'productShortDesc' : string,
-  'productID' : bigint,
-  'isSold' : boolean,
-  'isVisible' : boolean,
-  'sellerID' : string,
-  'productPicture' : string,
-  'productPrice' : Price,
-}
-export interface Rate { 'rate' : string, 'currency' : string }
 export interface Transaction {
-  'getBuyerID' : ActorMethod<[], string>,
-  'getID' : ActorMethod<[], bigint>,
-  'getPaidPrice' : ActorMethod<[], Price>,
-  'getProductID' : ActorMethod<[], string>,
-  'setBuyerID' : ActorMethod<[string], undefined>,
-  'setPaidPrice' : ActorMethod<[Price], undefined>,
-  'setProductID' : ActorMethod<[string], undefined>,
-}
-export interface TransformArgs {
-  'context' : Uint8Array | number[],
-  'response' : HttpResponsePayload,
+  'id' : bigint,
+  'paidPrice' : Price,
+  'productID' : string,
+  'buyerID' : string,
 }
 export interface User {
-  'addToCart' : ActorMethod<[Principal], undefined>,
-  'addToPurchases' : ActorMethod<[Principal], undefined>,
-  'addToSoldItems' : ActorMethod<[Principal], undefined>,
+  'addToCart' : ActorMethod<[Product], undefined>,
+  'addToPurchases' : ActorMethod<[Transaction], undefined>,
+  'addToSoldItems' : ActorMethod<[Transaction], undefined>,
   'addToWallet' : ActorMethod<[Price], undefined>,
-  'getBuyersCart' : ActorMethod<[], Array<Principal>>,
+  'getBuyersCart' : ActorMethod<[], Array<Product>>,
   'getName' : ActorMethod<[], string>,
-  'getPurchases' : ActorMethod<[], Array<Principal>>,
-  'getSellersStock' : ActorMethod<[], Array<Principal>>,
-  'getSoldItems' : ActorMethod<[], Array<Principal>>,
+  'getPurchases' : ActorMethod<[], Array<Transaction>>,
+  'getSellersStock' : ActorMethod<[], Array<Product>>,
+  'getSoldItems' : ActorMethod<[], Array<Transaction>>,
   'getWallet' : ActorMethod<[], Array<Price>>,
-  'listItem' : ActorMethod<[Principal], undefined>,
-  'setBuyersCart' : ActorMethod<[Array<Principal>], undefined>,
+  'listItem' : ActorMethod<[Product], undefined>,
+  'setBuyersCart' : ActorMethod<[Array<Product>], undefined>,
   'setName' : ActorMethod<[string], undefined>,
-  'setPurchases' : ActorMethod<[Array<Principal>], undefined>,
-  'setSellersStock' : ActorMethod<[Array<Principal>], undefined>,
-  'setSoldItems' : ActorMethod<[Array<Principal>], undefined>,
+  'setPurchases' : ActorMethod<[Array<Transaction>], undefined>,
+  'setSellersStock' : ActorMethod<[Array<Product>], undefined>,
+  'setSoldItems' : ActorMethod<[Array<Transaction>], undefined>,
   'setWallet' : ActorMethod<[Array<Price>], undefined>,
   'takeFromWallet' : ActorMethod<[Price], undefined>,
 }

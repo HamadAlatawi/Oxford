@@ -1,12 +1,16 @@
 {
 	"canisters": {
 		"backend": {
-			"main": "src/backend/main.mo",
+			"main": "src/backend/main/main.mo",
 			"type": "motoko",
 			"dependencies": ["fileUpload"]
 		},
 		"fileUpload" :{
-			"main" : "src/uploadFile/Assets.mo",
+			"main" : "src/backend/uploadFile/Assets.mo",
+			"type" : "motoko"
+		},
+		"httpOutcalls" :{
+			"main" : "src/backend/httpOutcalls/main.mo",
 			"type" : "motoko"
 		},
 		"frontend": {

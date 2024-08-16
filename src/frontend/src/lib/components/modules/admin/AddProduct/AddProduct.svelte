@@ -121,7 +121,7 @@
         chunk_ids: chunkIdsArray,
       });
 
-      img = "https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/assets/" + batch_name + "?canisterId=phfnf-wqaaa-aaaal-qi63q-cai"
+      img = "http://localhost:8000/assets/" + batch_name + "?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
 
       try {
         if(selectedCurrency === "USD"){
