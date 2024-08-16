@@ -1,5 +1,3 @@
-import Assets "canister:fileUpload";
-
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
 import Float "mo:base/Float";
