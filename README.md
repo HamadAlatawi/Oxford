@@ -51,15 +51,14 @@ Learn more about dfx identities here - [dfx identity](https://internetcomputer.o
 
 ## Starting the project
 
-
---------------------------------------
-If you want to start working on your project, run the following commands:
-
 install the relevant packages needed to run the frontend for the first time by running:
 
 ```bash
 npm run install
 ```
+
+--------------------------------------
+If you want to start working on your project, run the following commands:
 
 Open two separate terminals and in each terminal run:
 
