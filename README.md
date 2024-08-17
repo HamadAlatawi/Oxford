@@ -54,7 +54,7 @@ Learn more about dfx identities here - [dfx identity](https://internetcomputer.o
 install the relevant packages needed to run the frontend for the first time by running:
 
 ```bash
-npm run install
+npm install
 ```
 
 --------------------------------------
