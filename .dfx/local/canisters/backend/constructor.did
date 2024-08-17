@@ -1,0 +1,101 @@
+type User__1 = 
+ record {
+   buyersCart: vec Product;
+   name: text;
+   purchases: vec Transaction;
+   sellersStock: vec Product;
+   soldItems: vec Transaction;
+   wallet: vec Price;
+ };
+type User = 
+ service {
+   addToCart: (Product) -> ();
+   addToPurchases: (Transaction) -> ();
+   addToSoldItems: (Transaction) -> ();
+   addToWallet: (Price) -> ();
+   getBuyersCart: () -> (vec Product) query;
+   getName: () -> (text) query;
+   getPurchases: () -> (vec Transaction) query;
+   getSellersStock: () -> (vec Product) query;
+   getSoldItems: () -> (vec Transaction) query;
+   getWallet: () -> (vec Price) query;
+   listItem: (Product) -> ();
+   setBuyersCart: (vec Product) -> ();
+   setName: (text) -> ();
+   setPurchases: (vec Transaction) -> ();
+   setSellersStock: (vec Product) -> ();
+   setSoldItems: (vec Transaction) -> ();
+   setWallet: (vec Price) -> ();
+   takeFromWallet: (Price) -> ();
+ };
+type Transaction = 
+ record {
+   buyerID: text;
+   id: nat;
+   paidPrice: Price;
+   productID: text;
+ };
+type Product__1 = 
+ service {
+   getCategory: () -> (text) query;
+   getIsSold: () -> (bool) query;
+   getIsVisible: () -> (bool) query;
+   getLongDesc: () -> (text) query;
+   getName: () -> (text) query;
+   getPicture: () -> (text) query;
+   getPrice: () -> (Price) query;
+   getProductID: () -> (nat) query;
+   getSellerID: () -> (text) query;
+   getShortDesc: () -> (text) query;
+   setIsVisible: (bool) -> ();
+   setLongDesc: (text) -> ();
+   setName: (text) -> ();
+   setPicture: (text) -> ();
+   setPrice: (Price) -> ();
+   setProductID: (nat) -> () query;
+   setShortDesc: (text) -> ();
+   updateStatus: () -> ();
+ };
+type Product = 
+ record {
+   isSold: bool;
+   isVisible: bool;
+   name: text;
+   productCategory: text;
+   productID: nat;
+   productLongDesc: text;
+   productPicture: text;
+   productPrice: Price;
+   productShortDesc: text;
+   sellerID: text;
+ };
+type Price = 
+ record {
+   amount: nat;
+   currency: Currency;
+ };
+type Main = 
+ service {
+   createProduct: (text, text, text, Price, text, text, bool, text) ->
+    (Product__1);
+   createUser: (text) -> (User);
+   getAllProductTypes: () -> (vec Product);
+   getAllProductTypesFromObjectArray: (vec Product__1) -> (vec Product);
+   getAllProducts: () -> (vec Product__1) query;
+   getAllUserNames: () -> (vec text);
+   getAllUserTypes: () -> (vec User__1);
+   getAllUsers: () -> (vec User) query;
+   getAllUsersTypesFromObjectArray: (vec User) -> (vec User__1);
+   loginUser: (text) -> (User);
+   purchase: (User, Price, Product__1) -> ();
+ };
+type Currency = 
+ variant {
+   btc;
+   eth;
+   eur;
+   gbp;
+   icp;
+   usd;
+ };
+service : () -> Main

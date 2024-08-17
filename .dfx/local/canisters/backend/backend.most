@@ -1,0 +1,67 @@
+// Version: 1.0.0
+type Currency = {#btc; #eth; #eur; #gbp; #icp; #usd};
+type Price = {amount : Nat; currency : Currency};
+type Product =
+  {
+    isSold : Bool;
+    isVisible : Bool;
+    name : Text;
+    productCategory : Text;
+    productID : Nat;
+    productLongDesc : Text;
+    productPicture : Text;
+    productPrice : Price;
+    productShortDesc : Text;
+    sellerID : Text
+  };
+type Product__1 =
+  actor {
+    getCategory : shared query () -> async Text;
+    getIsSold : shared query () -> async Bool;
+    getIsVisible : shared query () -> async Bool;
+    getLongDesc : shared query () -> async Text;
+    getName : shared query () -> async Text;
+    getPicture : shared query () -> async Text;
+    getPrice : shared query () -> async Price;
+    getProductID : shared query () -> async Nat;
+    getSellerID : shared query () -> async Text;
+    getShortDesc : shared query () -> async Text;
+    setIsVisible : shared Bool -> async ();
+    setLongDesc : shared Text -> async ();
+    setName : shared Text -> async ();
+    setPicture : shared Text -> async ();
+    setPrice : shared Price -> async ();
+    setProductID : shared query Nat -> async ();
+    setShortDesc : shared Text -> async ();
+    updateStatus : shared () -> async ()
+  };
+type Product__2 = Product__1;
+type Transaction =
+  {buyerID : Text; id : Nat; paidPrice : Price; productID : Text};
+type User__1 =
+  actor {
+    addToCart : shared Product -> async ();
+    addToPurchases : shared Transaction -> async ();
+    addToSoldItems : shared Transaction -> async ();
+    addToWallet : shared Price -> async ();
+    getBuyersCart : shared query () -> async [Product];
+    getName : shared query () -> async Text;
+    getPurchases : shared query () -> async [Transaction];
+    getSellersStock : shared query () -> async [Product];
+    getSoldItems : shared query () -> async [Transaction];
+    getWallet : shared query () -> async [Price];
+    listItem : shared Product -> async ();
+    setBuyersCart : shared [Product] -> async ();
+    setName : shared Text -> async ();
+    setPurchases : shared [Transaction] -> async ();
+    setSellersStock : shared [Product] -> async ();
+    setSoldItems : shared [Transaction] -> async ();
+    setWallet : shared [Price] -> async ();
+    takeFromWallet : shared Price -> async ()
+  };
+type User__2 = User__1;
+actor {
+  stable var productIDNum : Nat;
+  stable var productsArray : [Product__2];
+  stable var usersArray : [User__2]
+};
