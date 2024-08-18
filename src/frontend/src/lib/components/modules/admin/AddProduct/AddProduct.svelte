@@ -13,6 +13,7 @@
     import { actorBackend } from "$lib/motokoImports/backend"
     import { fullName } from "$lib/data/stores/stores";
     import { toast } from "svelte-sonner";
+    import { v4 as uuidv4 } from 'uuid';
 
     let img = ""
     let formSubmitted = false;
@@ -99,7 +100,7 @@
 
     const uploadImage = async (formName : any, formPrice : any, formsDesc : any, formlDesc : any) =>{
       console.log(formName, formPrice, formlDesc, formsDesc)
-      const batch_name = files.accepted[0].name;
+      const batch_name = uuidv4();
       const promises = [];
       const chunkSize = 500000;
 
@@ -120,9 +121,16 @@
         content_type: files.accepted[0].type,
         chunk_ids: chunkIdsArray,
       });
-
-      img = "http://localhost:8000/assets/" + batch_name + "?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
-
+      
+      const canisterIdFileUpload = import.meta.env.VITE_FILEUPLOAD_CANISTER_ID;
+      if(import.meta.env.DEV){
+        img = "http://localhost:8000/assets/" + batch_name + `?canisterId=${canisterIdFileUpload}`
+      } else if(import.meta.env.PROD){
+        const host = import.meta.env.VITE_HOST;
+        const stripped = host.replace("https://","")
+          img = `https://${canisterIdFileUpload}.` + `${stripped}/assets/` + batch_name + `?canisterId=${canisterIdFileUpload}`
+      };
+     
       try {
         if(selectedCurrency === "USD"){
           await actorBackend.createProduct($fullName, formName, selectedCategory, {currency :{"usd": null} , amount : Number.parseInt(formPrice)}, formsDesc, formlDesc, true, img)

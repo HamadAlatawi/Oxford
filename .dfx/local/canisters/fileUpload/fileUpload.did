@@ -40,6 +40,7 @@ type Chunk =
    content: vec nat8;
  };
 service : {
+  check_unique: (text) -> (bool);
   commit_batch:
    (record {
       batch_name: text;

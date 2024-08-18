@@ -1,6 +1,6 @@
 type CanisterHttpResponsePayload = record {
   status : nat;
-  body : vec nat8;
+  body : blob;
   headers : vec HttpHeader;
 };
 type HttpHeader = record { value : text; name : text };
@@ -10,12 +10,9 @@ type HttpOutcalls = service {
 };
 type HttpResponsePayload = record {
   status : nat;
-  body : vec nat8;
+  body : blob;
   headers : vec HttpHeader;
 };
 type Rate = record { rate : text; currency : text };
-type TransformArgs = record {
-  context : vec nat8;
-  response : HttpResponsePayload;
-};
+type TransformArgs = record { context : blob; response : HttpResponsePayload };
 service : HttpOutcalls

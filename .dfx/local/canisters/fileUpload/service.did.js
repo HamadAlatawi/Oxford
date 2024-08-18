@@ -32,6 +32,7 @@ export const idlFactory = ({ IDL }) => {
     'body' : IDL.Vec(IDL.Nat8),
   });
   return IDL.Service({
+    'check_unique' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'commit_batch' : IDL.Func(
         [
           IDL.Record({

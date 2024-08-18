@@ -22,6 +22,14 @@ actor Assets {
     private let assets: HashMap.HashMap<Text, Types.Asset> =
       HashMap.HashMap<Text, Types.Asset>(0, Text.equal, Text.hash);
 
+    public func check_unique(name : Text) : async Bool {
+        let key = Text.concat("/assets/", name);
+        switch (assets.get(key)) {
+            case null { true };  // The name is unique (not found in the HashMap)
+            case (? _) { false };    // The name already exists in the HashMap
+        }
+    };
+
     public shared query({caller}) func http_request(
         request : Types.HttpRequest,
     ) : async Types.HttpResponse {

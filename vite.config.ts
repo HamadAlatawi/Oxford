@@ -6,18 +6,31 @@ import type { UserConfig } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
 import path from "path";
 
-// npm run dev = local
-// npm run build = local
-// dfx deploy = local
-// dfx deploy --network ic = ic
 const network = process.env.DFX_NETWORK ?? 'local';
-const host = network === 'local' ? 'http://localhost:8000' : 'https://icp-api.io';
+let host: string;
+
+if (network === 'local') {
+    host = 'http://localhost:8000';
+} else if (network === 'ic') {
+    host = 'https://icp-api.io';
+} else if (network === 'playground') {
+    host = 'https://raw.icp0.io';
+} else {
+    host = 'http://localhost:8000';
+}
 
 const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string> => {
-	const canisterIdsJsonFile =
-		network === 'ic'
-			? join(process.cwd(), 'canister_ids.json')
-			: join(process.cwd(), '.dfx', 'local', 'canister_ids.json');
+	let canisterIdsJsonFile: string;
+
+	if (network === 'ic') {
+		canisterIdsJsonFile = join(process.cwd(), 'canister_ids.json');
+	} else if (network === 'local') {
+		canisterIdsJsonFile = join(process.cwd(), '.dfx', 'local', 'canister_ids.json');
+	} else if (network === 'playground') {
+		canisterIdsJsonFile = join(process.cwd(), '.dfx', 'playground', 'canister_ids.json');
+	} else {
+		canisterIdsJsonFile = join(process.cwd(), '.dfx', 'local', 'canister_ids.json');
+	}
 
 	try {
 		type Details = {
