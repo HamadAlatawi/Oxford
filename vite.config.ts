@@ -6,10 +6,6 @@ import type { UserConfig } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
 import path from "path";
 
-// npm run dev = local
-// npm run build = local
-// dfx deploy = local
-// dfx deploy --network ic = ic
 const network = process.env.DFX_NETWORK ?? 'local';
 let host: string;
 
@@ -25,7 +21,7 @@ if (network === 'local') {
 
 const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string> => {
 	let canisterIdsJsonFile: string;
-	
+
 	if (network === 'ic') {
 		canisterIdsJsonFile = join(process.cwd(), 'canister_ids.json');
 	} else if (network === 'local') {
