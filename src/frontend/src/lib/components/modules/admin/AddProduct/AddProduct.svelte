@@ -100,7 +100,18 @@
 
     const uploadImage = async (formName : any, formPrice : any, formsDesc : any, formlDesc : any) =>{
       console.log(formName, formPrice, formlDesc, formsDesc)
-      const batch_name = uuidv4();
+
+      //const batch_name = uuidv4();
+      let batch_name: string;
+      let isUnique: boolean = false;
+
+      while (!isUnique) {
+        batch_name = uuidv4();
+        //batch_name= 'f1b7a20d-6962-4e16-8a20-a91698943e2c';
+        isUnique = await actorFileUpload.check_unique(batch_name);
+        console.log(isUnique);
+      }
+
       const promises = [];
       const chunkSize = 500000;
 
