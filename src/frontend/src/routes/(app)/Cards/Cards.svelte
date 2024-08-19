@@ -39,6 +39,7 @@
 
 	$: if (search === 'ready') {
 		results = searchPostsIndex(searchTerm)
+        console.log(results)
 	}
 
 
@@ -118,6 +119,7 @@
                 </div>
             {:else if results.length > 0}
                 {#each results as result}
+                {console.log(result)}
                     <div class="col-span-12 md:col-span-6 lg:col-span-3 w-full h-1/6 border-zinc-300 shadow-lg">
                         <Card 
                             name={result.name} 

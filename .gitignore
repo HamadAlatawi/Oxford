@@ -8,7 +8,8 @@
 **/.DS_Store
 
 # dfx temporary files
-.dfx/
+.dfx/ic
+.dfx/network
 
 # generated files
 src/declarations/

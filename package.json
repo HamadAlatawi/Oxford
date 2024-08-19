@@ -24,17 +24,17 @@
     "generate": "dfx generate && node ./update.types.mjs",
     "startdfx": "dfx start --clean --background",
     "deploy": "dfx deploy backend && dfx deploy fileUpload && dfx deploy httpOutcalls && dfx deploy frontend",
-    "deployPlayground" : "dfx deploy --network playground backend && dfx deploy --network playground httpOutcalls && dfx deploy --network playground fileUpload && dfx deploy --network playground frontend",
-    "deployPlaygroundFE" : "dfx deploy --network playground frontend",
+    "deployPlayground": "dfx deploy --network playground backend && dfx deploy --network playground httpOutcalls && dfx deploy --network playground fileUpload && dfx deploy --network playground frontend",
+    "deployPlaygroundFE": "dfx deploy --network playground frontend",
     "deployBackend": "dfx deploy backend",
-    "deployIC" : "dfx deploy --network ic backend && dfx deploy --network ic frontend",
-    "addCycles" : "dfx canister deposit-cycles $AMOUNT $CANISTERID",
-    "addCyclesIC" : "dfx canister --network ic deposit-cycles $AMOUNT $CANISTERID",
-    "rebuildCanister" : "dfx canister --network ic install $CANISTERID --mode reinstall",
-    "canisterStatus" : "dfx canister status --network ic --all",
-    "canisterID" : "dfx canister id $CANISTERNAME",
-    "canisterIDIC" : "dfx canister id $CANISTERNAME --network ic",
-    "canisterBitcoinRebuild" : "dfx canister install backend --mode reinstall --network ic"
+    "deployIC": "dfx deploy --network ic backend && dfx deploy --network ic frontend",
+    "addCycles": "dfx canister deposit-cycles $AMOUNT $CANISTERID",
+    "addCyclesIC": "dfx canister --network ic deposit-cycles $AMOUNT $CANISTERID",
+    "rebuildCanister": "dfx canister --network ic install $CANISTERID --mode reinstall",
+    "canisterStatus": "dfx canister status --network ic --all",
+    "canisterID": "dfx canister id $CANISTERNAME",
+    "canisterIDIC": "dfx canister id $CANISTERNAME --network ic",
+    "canisterBitcoinRebuild": "dfx canister install backend --mode reinstall --network ic"
   },
   "dependencies": {
     "@dfinity/agent": "^0.19.3",
@@ -53,6 +53,7 @@
     "svelte-sonner": "^0.3.22",
     "tailwind-merge": "^2.2.1",
     "tailwind-variants": "^0.1.20",
+    "uuid": "^10.0.0",
     "vaul-svelte": "^0.1.0"
   },
   "devDependencies": {
