@@ -60,19 +60,13 @@ npm install
 --------------------------------------
 If you want to start working on your project, run the following commands:
 
-Open two separate terminals and in each terminal run:
-
 
 ```bash
 # Terminal 1
 cd /Oxford
-npm run generate
 npm run startdfx
-```
-
-```bash
-# Terminal 2
 npm run deploy
+npm run generate
 ```
 
 This will build and deploy the project locally.
@@ -84,13 +78,9 @@ If you want to test your project locally with Hot Module Replacement (HMR), you 
 ```bash
 # Terminal 1
 cd /Oxford
-npm run generate
 npm run startdfx
-```
-
-```bash
-# Terminal 2
 npm run deploy
+npm run generate
 npm run dev
 ```
 
