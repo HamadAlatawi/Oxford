@@ -1,12 +1,12 @@
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
-import Float "mo:base/Float";
 import Nat "mo:base/Nat";
 import Text "mo:base/Text";
 
 import Types "../commons/Types";
 import Product "Product";
-import Transaction "Transaction";
+//Import not used Ali* - Hamad
+//import Transaction "Transaction";
 import User "User";
 
 //Actor
@@ -36,7 +36,7 @@ actor class Main() {
         return count;
     };
 
-    public func createUser(name : Text) : async User.User {
+    public func createUser<system>(name : Text) : async User.User {
         let fullNameSplits = await numberOfSplits(name, " ");
         if (fullNameSplits != 1) {
             var flag : Bool = false;
@@ -47,9 +47,9 @@ actor class Main() {
                 };
             };
         };
-        let cycles = Cycles.add(200000000000);
+        splitCycles<system>();
         let user = await User.User(name, [], [], [], [], [{ currency = #eth; amount = 0 }, { currency = #btc; amount = 0 }, { currency = #icp; amount = 0 }, { currency = #usd; amount = 0 }, { currency = #gbp; amount = 0 }, { currency = #eur; amount = 0 }]);
-        let temp = updateUserArray(user);
+        await updateUserArray(user);
         return user;
     };
     private func updateUserArray(user : User.User) : async () {
@@ -86,11 +86,11 @@ actor class Main() {
 
     // };
 
-    public func createProduct(user : Text, name : Text, category : Text, price : Types.Price, shortDesc : Text, longDesc : Text, isVisible : Bool, picture : Text) : async Product.Product {
-        let cycles = Cycles.add(200000000000);
+    public func createProduct<system>(user : Text, name : Text, category : Text, price : Types.Price, shortDesc : Text, longDesc : Text, isVisible : Bool, picture : Text) : async Product.Product {
+        splitCycles<system>();
         var product = await Product.Product(user, name, category, price, shortDesc, longDesc, isVisible, picture, productIDNum);
         productIDNum := productIDNum + 1;
-        let temp = updateProductArray(product);
+        await updateProductArray(product);
         return product;
     };
 
@@ -120,7 +120,7 @@ actor class Main() {
         for (index in usersArray.vals()) {
             let target = await user.getName();
             if (Text.equal(target, sellerName)) {
-                let x = index.addToWallet(price);
+                await index.addToWallet(price);
             };
         };
     };
@@ -140,14 +140,15 @@ actor class Main() {
         };
     };
 
-    private func convertTransactionToType(transaction : Transaction.Transaction) : async Types.Transaction {
-        return {
-            id = await transaction.getID();
-            productID = await transaction.getProductID();
-            buyerID = await transaction.getBuyerID();
-            paidPrice = await transaction.getPaidPrice();
-        };
-    };
+    //Function not used Ali* - Hamad
+    // private func convertTransactionToType(transaction : Transaction.Transaction) : async Types.Transaction {
+    //     return {
+    //         id = await transaction.getID();
+    //         productID = await transaction.getProductID();
+    //         buyerID = await transaction.getBuyerID();
+    //         paidPrice = await transaction.getPaidPrice();
+    //     };
+    // };
 
     private func convertUserToType(user : User.User) : async Types.User {
         return {
@@ -159,4 +160,8 @@ actor class Main() {
             wallet = await user.getWallet();
         };
     };
+
+    private func splitCycles<system>() {
+        Cycles.add<system>(200000000000); // no warning or error
+    }
 };

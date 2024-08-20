@@ -1,33 +1,18 @@
-type TransformArgs = 
- record {
-   context: blob;
-   response: HttpResponsePayload;
- };
-type Rate = 
- record {
-   currency: text;
-   rate: text;
- };
-type HttpResponsePayload = 
- record {
-   body: vec nat8;
-   headers: vec HttpHeader;
-   status: nat;
- };
-type HttpOutcalls = 
- service {
-   getConfirmationDetails: (text) -> (vec Rate);
-   transform: (TransformArgs) -> (CanisterHttpResponsePayload) query;
- };
-type HttpHeader = 
- record {
-   name: text;
-   value: text;
- };
-type CanisterHttpResponsePayload = 
- record {
-   body: vec nat8;
-   headers: vec HttpHeader;
-   status: nat;
- };
+type CanisterHttpResponsePayload = record {
+  status : nat;
+  body : blob;
+  headers : vec HttpHeader;
+};
+type HttpHeader = record { value : text; name : text };
+type HttpOutcalls = service {
+  getConfirmationDetails : (text) -> (vec Rate);
+  transform : (TransformArgs) -> (CanisterHttpResponsePayload) query;
+};
+type HttpResponsePayload = record {
+  status : nat;
+  body : blob;
+  headers : vec HttpHeader;
+};
+type Rate = record { rate : text; currency : text };
+type TransformArgs = record { context : blob; response : HttpResponsePayload };
 service : () -> HttpOutcalls

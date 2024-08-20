@@ -1,5 +1,6 @@
 import Buffer "mo:base/Buffer";
 import Text "mo:base/Text";
+import Result "mo:base/Result";
 
 import Types "../commons/Types";
 
@@ -23,7 +24,7 @@ actor class User(
     var sellersStockBuffer = Buffer.fromArray<Types.Product>(userSellersStock);
     var purchasesBuffer = Buffer.fromArray<Types.Transaction>(userPurchases);
     var soldItemsBuffer = Buffer.fromArray<Types.Transaction>(userSoldItems);
-    var walletBuffer = Buffer.fromArray<Types.Price>(userWallet);
+    // var walletBuffer = Buffer.fromArray<Types.Price>(userWallet);
 
     public query func getName() : async Text {
         return userName;
@@ -106,24 +107,29 @@ actor class User(
                 newWallet.add(j);
             };
         };
-        let temp = await setWallet(Buffer.toArray(newWallet));
+        await setWallet(Buffer.toArray(newWallet));
     };
 
-    public func takeFromWallet(price : Types.Price) : async () {
+    public func takeFromWallet(price : Types.Price) : async Result.Result<(), Text> {
         var newWallet = Buffer.Buffer<Types.Price>(0);
         for (j in userWallet.vals()) {
             if (price.currency == j.currency) {
-                var amount = j.amount -price.amount;
-                let p : Types.Price = {
-                    currency = price.currency;
-                    amount = amount;
-                };
-                newWallet.add(p);
+                if (j.amount >= price.amount) {
+                    var amount = j.amount : Nat - price.amount : Nat;
+                    let p : Types.Price = {
+                        currency = price.currency;
+                        amount = amount;
+                    };
+                    newWallet.add(p);
+                } else {
+                    return #err("Insufficient funds");
+                }
             } else {
                 newWallet.add(j);
             };
         };
-        let temp = await setWallet(Buffer.toArray(newWallet));
+        await setWallet(Buffer.toArray(newWallet));
+        #ok(())
     };
 
     //  public func changeWalletInfo(newWallet: [Types.Price]): async(){

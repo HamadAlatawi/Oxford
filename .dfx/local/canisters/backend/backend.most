@@ -36,6 +36,7 @@ type Product__1 =
     updateStatus : shared () -> async ()
   };
 type Product__2 = Product__1;
+type Result<Ok, Err> = {#err : Err; #ok : Ok};
 type Transaction =
   {buyerID : Text; id : Nat; paidPrice : Price; productID : Text};
 type User__1 =
@@ -57,7 +58,7 @@ type User__1 =
     setSellersStock : shared [Product] -> async ();
     setSoldItems : shared [Transaction] -> async ();
     setWallet : shared [Price] -> async ();
-    takeFromWallet : shared Price -> async ()
+    takeFromWallet : shared Price -> async Result<(), Text>
   };
 type User__2 = User__1;
 actor {

@@ -63,6 +63,8 @@ export interface Product__1 {
   'setShortDesc' : ActorMethod<[string], undefined>,
   'updateStatus' : ActorMethod<[], undefined>,
 }
+export type Result = { 'ok' : null } |
+  { 'err' : string };
 export interface Transaction {
   'id' : bigint,
   'paidPrice' : Price,
@@ -87,7 +89,7 @@ export interface User {
   'setSellersStock' : ActorMethod<[Array<Product>], undefined>,
   'setSoldItems' : ActorMethod<[Array<Transaction>], undefined>,
   'setWallet' : ActorMethod<[Array<Price>], undefined>,
-  'takeFromWallet' : ActorMethod<[Price], undefined>,
+  'takeFromWallet' : ActorMethod<[Price], Result>,
 }
 export interface User__1 {
   'name' : string,
@@ -99,4 +101,4 @@ export interface User__1 {
 }
 export interface _SERVICE extends Main {}
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

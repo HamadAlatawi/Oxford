@@ -8,8 +8,8 @@
 **/.DS_Store
 
 # dfx temporary files
-.dfx/ic
-.dfx/network
+dfx/ic
+dfx/network
 
 # generated files
 src/declarations/
@@ -37,3 +37,5 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.mops

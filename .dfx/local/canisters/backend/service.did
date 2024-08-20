@@ -47,6 +47,7 @@ type Product__1 = service {
   setShortDesc : (text) -> ();
   updateStatus : () -> ();
 };
+type Result = variant { ok; err : text };
 type Transaction = record {
   id : nat;
   paidPrice : Price;
@@ -71,7 +72,7 @@ type User = service {
   setSellersStock : (vec Product) -> ();
   setSoldItems : (vec Transaction) -> ();
   setWallet : (vec Price) -> ();
-  takeFromWallet : (Price) -> ();
+  takeFromWallet : (Price) -> (Result);
 };
 type User__1 = record {
   name : text;

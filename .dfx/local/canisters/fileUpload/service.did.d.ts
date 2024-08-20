@@ -35,6 +35,7 @@ export type StreamingStrategy = {
     }
   };
 export interface _SERVICE {
+  'check_unique' : ActorMethod<[string], boolean>,
   'commit_batch' : ActorMethod<
     [
       {
@@ -53,4 +54,4 @@ export interface _SERVICE {
   >,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

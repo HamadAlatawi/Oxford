@@ -46,6 +46,7 @@ export const idlFactory = ({ IDL }) => {
     'productID' : IDL.Text,
     'buyerID' : IDL.Text,
   });
+  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text });
   const User = IDL.Service({
     'addToCart' : IDL.Func([Product], [], []),
     'addToPurchases' : IDL.Func([Transaction], [], []),
@@ -64,7 +65,7 @@ export const idlFactory = ({ IDL }) => {
     'setSellersStock' : IDL.Func([IDL.Vec(Product)], [], []),
     'setSoldItems' : IDL.Func([IDL.Vec(Transaction)], [], []),
     'setWallet' : IDL.Func([IDL.Vec(Price)], [], []),
-    'takeFromWallet' : IDL.Func([Price], [], []),
+    'takeFromWallet' : IDL.Func([Price], [Result], []),
   });
   const User__1 = IDL.Record({
     'name' : IDL.Text,

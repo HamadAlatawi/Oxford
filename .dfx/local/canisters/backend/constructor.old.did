@@ -26,7 +26,7 @@ type User =
    setSellersStock: (vec Product) -> ();
    setSoldItems: (vec Transaction) -> ();
    setWallet: (vec Price) -> ();
-   takeFromWallet: (Price) -> ();
+   takeFromWallet: (Price) -> (Result);
  };
 type Transaction = 
  record {
@@ -34,6 +34,11 @@ type Transaction =
    id: nat;
    paidPrice: Price;
    productID: text;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok;
  };
 type Product__1 = 
  service {

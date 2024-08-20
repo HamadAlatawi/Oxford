@@ -1,14 +1,14 @@
 import Text "mo:base/Text";
-import HashMap "mo:base/HashMap";
 import Nat "mo:base/Nat";
-import Hash "mo:base/Hash";
 import Array "mo:base/Array";
 import Time "mo:base/Time";
 import Blob "mo:base/Blob";
 import Iter "mo:base/Iter";
 import Error "mo:base/Error";
 import Principal "mo:base/Principal";
-import Debug "mo:base/Debug";
+import Map "mo:map/Map";
+import { nhash } "mo:map/Map";
+import { thash } "mo:map/Map";
 
 import Types "../commons/HttpTypes";
 
@@ -16,21 +16,18 @@ actor Assets {
 
     private var nextChunkID: Nat = 0;
 
-    private let chunks: HashMap.HashMap<Nat, Types.Chunk> =
-       HashMap.HashMap<Nat, Types.Chunk>(0, Nat.equal, Hash.hash);
-
-    private let assets: HashMap.HashMap<Text, Types.Asset> =
-      HashMap.HashMap<Text, Types.Asset>(0, Text.equal, Text.hash);
+    private let chunks: Map.Map<Nat, Types.Chunk> = Map.new<Nat, Types.Chunk>();
+    private let assets: Map.Map<Text, Types.Asset> = Map.new<Text, Types.Asset>();
 
     public func check_unique(name : Text) : async Bool {
         let key = Text.concat("/assets/", name);
-        switch (assets.get(key)) {
+        switch (Map.get<Text, Types.Asset>(assets, thash, key)) {
             case null { true };
             case (? _) { false };
         }
     };
 
-    public shared query({caller}) func http_request(
+    public shared query({caller = _}) func http_request(
         request : Types.HttpRequest,
     ) : async Types.HttpResponse {
 
@@ -38,7 +35,7 @@ actor Assets {
             let split: Iter.Iter<Text> = Text.split(request.url, #char '?');
             let key: Text = Iter.toArray(split)[0];
 
-            let asset: ?Types.Asset = assets.get(key);
+            let asset: ?Types.Asset = Map.get<Text, Types.Asset>(assets, thash, key);
 
             switch (asset) {
                 case (?{content_type: Text; encoding: Types.AssetEncoding;}) {
@@ -69,7 +66,7 @@ actor Assets {
     private func create_strategy(
         key : Text,
         index  : Nat,
-        asset : Types.Asset,
+        _asset : Types.Asset,
         encoding : Types.AssetEncoding,
     ) : ?Types.StreamingStrategy {
         switch (create_token(key, index, encoding)) {
@@ -87,11 +84,11 @@ actor Assets {
         };
     };
 
-    public shared query({caller}) func http_request_streaming_callback(
+    public shared query({caller = _}) func http_request_streaming_callback(
         st : Types.StreamingCallbackToken,
     ) : async Types.StreamingCallbackHttpResponse {
 
-        switch (assets.get(st.key)) {
+        switch (Map.get<Text, Types.Asset>(assets, thash, st.key)) {
             case (null) throw Error.reject("key not found: " # st.key);
             case (? asset) {
                 return {
@@ -123,16 +120,15 @@ actor Assets {
         };
     };
 
-    public shared({caller}) func create_chunk(chunk: Types.Chunk) : async {
+    public shared({caller = _}) func create_chunk(chunk: Types.Chunk) : async {
         chunk_id : Nat
     } {
         nextChunkID := nextChunkID + 1;
-        chunks.put(nextChunkID, chunk);
-
+        Map.set(chunks, nhash, nextChunkID, chunk);
         return {chunk_id = nextChunkID};
     };
 
-    public shared({caller}) func commit_batch(
+    public shared({caller = _}) func commit_batch(
         {batch_name: Text; chunk_ids: [Nat]; content_type: Text;} : {
             batch_name: Text;
             content_type: Text;
@@ -142,7 +138,7 @@ actor Assets {
          var content_chunks : [[Nat8]] = [];
 
          for (chunk_id in chunk_ids.vals()) {
-            let chunk: ?Types.Chunk = chunks.get(chunk_id);
+            let chunk: ?Types.Chunk = Map.get(chunks, nhash, chunk_id);
 
             switch (chunk) {
                 case (?{content}) {
@@ -157,7 +153,7 @@ actor Assets {
             var total_length = 0;
             for (chunk in content_chunks.vals()) total_length += chunk.size();
 
-            assets.put(Text.concat("/assets/", batch_name), {
+            Map.set(assets, thash, Text.concat("/assets/", batch_name), {
                 content_type = content_type;
                 encoding = {
                     modified  = Time.now();
